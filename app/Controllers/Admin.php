@@ -674,7 +674,8 @@ class Admin extends BaseController
     {
         $data = [
             'id_pesan' => $id_pesan,
-            'durasi' => $this->request->getPost('durasi')
+            'durasi' => $this->request->getPost('durasi'),
+            'jenis_usaha' => $this->request->getPost('jenis_usaha'),
         ];
         $this->ModelPesan->UpdateData($data);
         session()->setFlashdata('pesan', 'Data Berhasil DiUpdate.');

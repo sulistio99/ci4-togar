@@ -40,7 +40,9 @@
 </head>
 
 <body>
-
+  <?php
+  $db = \Config\Database::connect();
+  ?>
   <div class="colorlib-loader"></div>
 
   <div id="page">
@@ -55,6 +57,7 @@
               <label for="">Hubungi Admin:</label>
               <h5><a href="#"><i class="icon-whatsapp"></i> 089635789232</a></h5>
             </div>
+
           </div>
           <div class="row">
             <div class="col-sm-12 text-left menu-1">
@@ -70,9 +73,25 @@
                   </li>
                 <?php  } ?>
                 <?php if (session('id_member')) { ?>
+                  <li class="has-dropdown <?= $menu == 'datapemesan' ? 'active' : ''; ?>">
+                    <a href="">Data Pemesan</a>
+                    <ul class="dropdown">
+                      <li class="<?= $submenu == 'pemesanlokasisewa' ? 'active' : ''; ?>"><a href="<?= base_url('Home/PemesanLokasiSewa/' . session('id_member')); ?>">Pemesan Lokasi Sewa</a>
+                      </li>
+                      <li class="<?= $submenu == 'transaksilokasisewa' ? 'active' : ''; ?>"><a href="<?= base_url('Home/transaksilokasisewa/' . session('id_member')); ?>">Transaksi Lokasi Sewa</a>
+                      </li>
+                    </ul>
+                  </li>
+                <?php  } ?>
+                <?php if (session('id_member')) { ?>
                   <li class="has-dropdown <?= $menu == 'akun' ? 'active' : ''; ?>">
                     <a href="">Akun</a>
                     <ul class="dropdown">
+                      <li class="text-light text-center">
+                        <img src="<?= base_url('foto/member/' . session('foto_member')); ?>" width="60px" style="border-radius: 50px;"> <?= session('nama_member'); ?>
+                      </li>
+                      <li class="<?= $submenu == 'detailakun' ? 'active' : ''; ?>"><a href="<?= base_url('Home/DetailAkun/' . session('id_member')); ?>">Detail Akun</a>
+                      </li>
                       <li class="<?= $submenu == 'tambahtempat' ? 'active' : ''; ?>"><a href="<?= base_url('Home/TambahTempat/' . session('id_member')); ?>">Tambah Tempat</a>
                       </li>
                       <li class="<?= $submenu == 'datatempat' ? 'active' : ''; ?>"><a href="<?= base_url('Home/Tempat/' . session('id_member')); ?>">Data Tempat</a>

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Config\Pager;
 use App\Models\ModelHunian;
 use App\Models\ModelSewa;
+use App\Models\ModelMember;
 use App\Models\ModelPesan;
 use App\Models\ModelKategori;
 use App\Models\ModelKabupaten;
@@ -24,6 +25,7 @@ class Home extends BaseController
         $this->ModelProvinsi = new ModelProvinsi();
         $this->ModelKabupaten = new ModelKabupaten();
         $this->ModelKecamatan = new ModelKecamatan();
+        $this->ModelMember = new ModelMember();
         $pager =  \Config\Services::Pager();
     }
 
@@ -39,6 +41,39 @@ class Home extends BaseController
 
     public function info()
     {
+
+
+
+        $harga = $this->request->getPost('harga_hunian');
+
+        if ($harga == 'tertinggi') {
+            $h =   $this->ModelHunian->HargaTertinggi();
+            $data2 = [
+                'page' => 'v_info',
+                'menu' => 'info',
+                'submenu' => '',
+                'hunian' => $this->ModelHunian->AllData(),
+                'h' => $h,
+                'hunianp' => $this->ModelHunian->paginate(8, 'hunianp'),
+                'pager' => $this->ModelHunian->pager,
+                'hunianterbaru' => $this->ModelHunian->AllDataLimit()
+            ];
+            return view('v_template_user', $data2);
+        } elseif ($harga == 'terendah') {
+            $h =   $this->ModelHunian->HargaTerendah();
+            $data2 = [
+                'page' => 'v_info',
+                'menu' => 'info',
+                'submenu' => '',
+                'hunian' => $this->ModelHunian->AllData(),
+                'h' => $h,
+                'hunianp' => $this->ModelHunian->paginate(8, 'hunianp'),
+                'pager' => $this->ModelHunian->pager,
+                'hunianterbaru' => $this->ModelHunian->AllDataLimit()
+            ];
+            return view('v_template_user', $data2);
+        }
+
         $keywoard = $this->request->getPost('keywoard');
         if ($keywoard) {
             $h =  $this->ModelHunian->Pencarian($keywoard);
@@ -140,6 +175,122 @@ class Home extends BaseController
         ];
         return view('v_template_user', $data);
     }
+
+    public function DetailAkun($id_member)
+    {
+        $id_member = session('id_member');
+        $data = [
+            'title' => 'Detail Akun',
+            'page' => 'user/v_detail_akun',
+            'menu' => 'akun',
+            'submenu' => 'detailakun',
+            'member' => $this->ModelMember->DetailData($id_member),
+        ];
+        return view('v_template_user', $data);
+    }
+
+    public function UbahDataAkun($id_member)
+    {
+        if ($this->validate([
+            'nama_member' => [
+                'label' => 'Nama Member',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'alamat_member' => [
+                'label' => 'Alamat',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'status' => [
+                'label' => 'Status',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'email_member' => [
+                'label' => 'E-Mail',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'pass_member' => [
+                'label' => 'Password',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'nohp' => [
+                'label' => 'No Hp',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'foto_member' => [
+                'label' => 'Foto',
+                // tidak wajib ganti foto 
+                'rules' => 'max_size[foto_member,2048]|mime_in[foto_member,image/png,image/jpg,image/gif,image/jpeg]',
+                'errors' => [
+                    'max_size' => '{field} Max 2Mb.',
+                    'mime_in' => 'Format {field} Harus JPG, JPEG, PNG,GIF',
+                ]
+            ],
+        ])) {
+            // ambil dlu getfile dari form
+            $foto = $this->request->getFile('foto_member');
+
+            if ($foto->getError() == 4) {
+                // ambil variabel dari form users
+                $data = [
+                    'id_member' => $id_member,
+                    'nama_member' => $this->request->getPost('nama_member'),
+                    'status' => $this->request->getPost('status'),
+                    'email_member' => $this->request->getPost('email_member'),
+                    'pass_member' => $this->request->getPost('pass_member'),
+                    'nohp' => $this->request->getPost('nohp'),
+                    'alamat_member' => $this->request->getPost('alamat_member'),
+                ];
+                $this->ModelMember->UpdateData($data);
+            } else {
+                // jika ganti gambar
+                // hapus foto lama
+                $member = $this->ModelMember->DetailData($id_member);
+                if ($member['foto_member'] <> '' or $member['foto_member'] <> null) {
+                    // unlink untuk hapus foto lama gantiyang baru
+                    unlink('foto/member/' . $member['foto_member']);
+                }
+                // getrandomname untuk penamaan file
+                $nama_file = $foto->getRandomName();
+                $data = [
+                    'id_member' => $id_member,
+                    'nama_member' => $this->request->getPost('nama_member'),
+                    'status' => $this->request->getPost('status'),
+                    'email_member' => $this->request->getPost('email_member'),
+                    'pass_member' => $this->request->getPost('pass_member'),
+                    'nohp' => $this->request->getPost('nohp'),
+                    'alamat_member' => $this->request->getPost('alamat_member'),
+                    'foto_member' => $nama_file,
+                ];
+                $foto->move('foto/member', $nama_file);
+                $this->ModelMember->UpdateData($data);
+            }
+            session()->setFlashdata('pesan', 'Data Berhasil Diubah!');
+            return redirect()->to(base_url('Home/DetailAkun/' . $id_member));
+            // jika entri tidak valid
+        } else {
+            session()->setFlashdata('errors', \config\Services::validation()->getErrors());
+            return redirect()->to(base_url('Home/DetailAkun/' . $id_member))->withInput('validation', \Config\Services::validation());
+        }
+    }
+
     public function TambahTempat($id_member)
     {
         $id_member = session('id_member');
@@ -170,6 +321,13 @@ class Home extends BaseController
             ],
             'alamat_hunian' => [
                 'label' => 'Alamat',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} Wajib Diisi, tidak boleh kosong!'
+                ]
+            ],
+            'alamat_map' => [
+                'label' => 'Alamat Maps',
                 'rules' => 'required',
                 'errors' => [
                     'required' => '{field} Wajib Diisi, tidak boleh kosong!'
@@ -257,6 +415,7 @@ class Home extends BaseController
             $data = [
                 'nama_pemilik' => $this->request->getPost('nama_pemilik'),
                 'alamat_hunian' => $this->request->getPost('alamat_hunian'),
+                'alamat_map' => $this->request->getPost('alamat_map'),
                 'id_kategori' => $this->request->getPost('id_kategori'),
                 'id_provinsi' => $this->request->getPost('id_provinsi'),
                 'id_kabupaten' => $this->request->getPost('id_kabupaten'),
@@ -498,5 +657,29 @@ class Home extends BaseController
         $this->ModelHunian->DeleteData($data);
         session()->setFlashdata('pesan', 'Data Berhasil Dihapus.');
         return redirect()->to(base_url('Home/Tempat/' . $id_member));
+    }
+
+    public function PemesanLokasiSewa($id_member)
+    {
+        $id_member = session('id_member');
+        $data = [
+            'page' => 'user/v_pemesanlokasisewa',
+            'menu' => 'datapemesan',
+            'submenu' => 'pemesanlokasisewa',
+            'datapemesan' => $this->ModelPesan->DetailDataPemesan($id_member),
+        ];
+        return view('v_template_user', $data);
+    }
+
+    public function transaksilokasisewa($id_member)
+    {
+        $id_member = session('id_member');
+        $data = [
+            'page' => 'user/v_transaksilokasisewa',
+            'menu' => 'datapemesan',
+            'submenu' => 'transaksilokasisewa',
+            'datapemesan' => $this->ModelPesan->DetailDataPemesan($id_member),
+        ];
+        return view('v_template_user', $data);
     }
 }

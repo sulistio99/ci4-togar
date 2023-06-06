@@ -112,6 +112,7 @@ class Auth extends BaseController
                 session()->set('id_member', $cek['id_member']);
                 session()->set('nama_member', $cek['nama_member']);
                 session()->set('email_member', $cek['email_member']);
+                session()->set('foto_member', $cek['foto_member']);
                 // login
                 return redirect()->to(base_url('Home'));
             } else {

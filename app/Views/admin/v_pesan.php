@@ -22,6 +22,7 @@
             <th>Nama Pemesan</th>
             <th>No Hp</th>
             <th>Nama Hunian</th>
+            <th>Jenis Usaha</th>
             <th>Tanggal Mulai</th>
             <th>Durasi Per/Bulan</th>
             <th>Aksi</th>
@@ -36,6 +37,7 @@
               <td><?= $value['nama_member']; ?></td>
               <td><?= $value['nohp']; ?></td>
               <td><?= $value['nama_hunian']; ?></td>
+              <td><?= $value['jenis_usaha']; ?></td>
               <td><?= $value['tanggal_mulai']; ?></td>
               <td><?= $value['durasi']; ?></td>
               <td class="text-center">
@@ -70,6 +72,10 @@
           <div class="form-group">
             <label>Nama Member</label>
             <input type="text" value="<?= $value['nama_member']; ?>" class="form-control" disabled>
+          </div>
+          <div class="form-group">
+            <label>Jenis Usaha</label>
+            <input type="text" value="<?= $value['jenis_usaha']; ?>" class="form-control" name="jenis_usaha">
           </div>
           <div class="form-group">
             <label>Durasi/Bulan</label><br>

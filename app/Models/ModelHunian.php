@@ -107,4 +107,18 @@ class ModelHunian extends Model
       ->orLike('alamat_hunian', $keywoard)
       ->get()->getResultArray();
   }
+
+  public function HargaTerendah()
+  {
+    return $this->db->table('tb_hunian')
+      ->orderBy('harga_hunian', 'ASC')
+      ->get()->getResultArray();
+  }
+
+  public function HargaTertinggi()
+  {
+    return $this->db->table('tb_hunian')
+      ->orderBy('harga_hunian', 'DESC')
+      ->get()->getResultArray();
+  }
 }

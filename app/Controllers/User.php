@@ -39,12 +39,15 @@ class User extends BaseController
         $data = [
             'id_member' => $id_member,
             'id_hunian' => $this->request->getPost('id_hunian'),
+            'id_pemilik' => $this->request->getPost('id_pemilik'),
+            'id_pemesan' => $id_member,
             'tanggal_mulai' => $this->request->getPost('tanggal_mulai'),
             'durasi' => $this->request->getPost('durasi'),
+            'jenis_usaha' => $this->request->getPost('jenis_usaha'),
             'status_pesan' => '',
         ];
         $this->ModelPesan->AddData($data);
-        session()->setFlashdata('pesan', 'Data Pesan Berhasil Terkirim! Lanjutkan Ke Menu Pembayaran');
+        session()->setFlashdata('pesan', 'Data Pesan Berhasil Terkirim');
         return redirect()->to(base_url('Home/Info'));
     }
 

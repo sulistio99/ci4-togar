@@ -49,6 +49,16 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Alamat Maps (salin url di bagian "Embed a map" pada google maps)</label>
+                        <label style="font-size: 10px;">Contoh : "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d127163.09919439977!2d119.523168!3d-5.12836!3m2!1i1024!2i768!4f13."</label>
+                        <!-- value old untuk tidak input ulang lagi -->
+                        <input type="text" class="form-control" name="alamat_map" placeholder="Alamat Maps" value="<?= old('alamat_hunian'); ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Nama Tempat</label>
@@ -156,7 +166,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label>Harga Sewa</label>
+                        <label>Harga Sewa / Bulan</label>
                         <!-- value old untuk tidak input ulang lagi -->
                         <input type="text" class="form-control" name="harga_hunian" placeholder="Harga Sewa Tempat">
                     </div>

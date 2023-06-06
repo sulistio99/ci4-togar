@@ -48,4 +48,12 @@ class ModelPesan extends Model
       ->where('id_pesan', $data['id_pesan'])
       ->delete($data);
   }
+
+  public function DetailDataPemesan($id_member)
+  {
+    return $this->db->table('tb_pesan')
+      ->join('tb_hunian', 'tb_hunian.id_hunian=tb_pesan.id_hunian')
+      ->where('id_pemilik', $id_member)
+      ->get()->getResultArray();
+  }
 }

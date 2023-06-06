@@ -24,16 +24,22 @@
       </div>
       <div class="col-sm-4">
         <?php echo form_open('User/Pesan/' . session('id_member')) ?>
-        <div class="product-desc font-weight-bold">
+        <?php
+        $db = \Config\Database::connect();
+        $nama_pemilik = $db->table('tb_hunian')
+          ->join('tb_member', 'tb_member.id_member=tb_hunian.id_member')
+          ->where('tb_hunian.id_member', $detailhunian['id_member'])
+          ->get()->getRowArray();
+        ?>
+        <div class="product-desc">
           <h3><?= $detailhunian['nama_hunian']; ?></h3>
-          Luas Tanah : <?= $detailhunian['luas_tanah']; ?> m² | Luas Bangunan : <?= $detailhunian['luas_bangunan']; ?> m²
-          <br>
-          <i class="icon-location"></i> <?= $detailhunian['alamat_hunian']; ?>
           <p class="price">
             <span><?= number_to_currency($detailhunian['harga_hunian'], 'Rp.') ?> / Bulan</span>
           </p>
+          Luas Tanah : <?= $detailhunian['luas_tanah']; ?> m² | Luas Bangunan : <?= $detailhunian['luas_bangunan']; ?> m²
           <p>
-            <span>Status : <?= $detailhunian['status_hunian']; ?></span>
+            <span>Nama Pemilik : <?= $nama_pemilik['nama_member']; ?></span>
+            <input type="hidden" name="id_pemilik" value="<?= $detailhunian['id_member']; ?>">
           </p>
           <a href="https://wa.me/089635789232" class="btn btn-success btn-addtocart btn-block"> <i class="icon-whatsapp"></i> Hubungi Pemilik Tempat
           </a>
@@ -54,6 +60,8 @@
               <label for="contactChoice1">6 Bulan</label>
               <input type="radio" name="durasi" value="12 Bulan" />
               <label for="contactChoice1">12 Bulan</label>
+              <h4>Jenis Usaha :</h4>
+              <input type="text" name="jenis_usaha" placeholder="Jenis Usaha Anda" class="form-control">
             </div>
           </div>
           <div class="row">
@@ -95,7 +103,10 @@
               <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane border fade show active" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
                   <h5>Lihat Map : </h5>
-                  <p> <i class="icon-location"></i> <?= $detailhunian['alamat_hunian']; ?></p>
+
+                  <iframe src="<?= $detailhunian['alamat_map']; ?>" width="250" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+                  <p style="font-weight: bold;"> <i class="icon-location"></i> <?= $detailhunian['alamat_hunian']; ?></p>
                 </div>
 
                 <div class="tab-pane border fade" id="pills-manufacturer" role="tabpanel" aria-labelledby="pills-manufacturer-tab">
